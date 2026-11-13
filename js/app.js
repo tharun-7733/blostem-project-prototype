@@ -1,254 +1,308 @@
-/* ============================================
-   🏦 RichPerson FD Advisor — Main App
-   ============================================ */
+/* ═══════════════════════════════════════════════════════════
+   CropWise — Main Application Script
+   Particle system, form handling, API calls, animations
+   ═══════════════════════════════════════════════════════════ */
 
-import SpeechModule from './speech.js';
-import GeminiAPI from './gemini.js';
-import UI from './ui.js';
+const API_URL = "http://127.0.0.1:5000";
 
-class App {
-  constructor() {
-    this.speech = new SpeechModule();
-    this.gemini = new GeminiAPI();
-    this.ui = new UI();
+/* ── Crop enrichment data ── */
+const CROP_DB = {
+  rice:        { season: "Kharif", water: "High", period: "120–150 days", tip: "Requires standing water and warm, humid conditions." },
+  maize:       { season: "Kharif", water: "Medium", period: "80–110 days", tip: "Thrives in well-drained, fertile loam soil." },
+  chickpea:    { season: "Rabi", water: "Low", period: "90–120 days", tip: "Grows well in cool, dry climates with minimal irrigation." },
+  kidneybeans: { season: "Rabi", water: "Medium", period: "90–120 days", tip: "Prefers slightly acidic soil and moderate rainfall." },
+  pigeonpeas:  { season: "Kharif", water: "Low", period: "120–180 days", tip: "Drought-resistant; ideal for semi-arid regions." },
+  mothbeans:   { season: "Kharif", water: "Low", period: "60–90 days", tip: "Very drought-tolerant; grows in sandy soils." },
+  mungbean:    { season: "Kharif / Zaid", water: "Low", period: "60–75 days", tip: "Short-duration pulse; good for crop rotation." },
+  blackgram:   { season: "Kharif / Rabi", water: "Low", period: "80–90 days", tip: "Tolerates shade; grows well as an intercrop." },
+  lentil:      { season: "Rabi", water: "Low", period: "100–120 days", tip: "Prefers loamy soil with good drainage." },
+  pomegranate: { season: "Kharif / Rabi", water: "Low", period: "150–180 days", tip: "Drought-hardy fruit; prefers hot, dry climate." },
+  banana:      { season: "Kharif", water: "High", period: "270–365 days", tip: "Needs rich, well-drained soil and consistent moisture." },
+  mango:       { season: "Kharif", water: "Medium", period: "100–150 days", tip: "Deep-rooted tree; flourishes in tropical heat." },
+  grapes:      { season: "Rabi", water: "Medium", period: "150–180 days", tip: "Requires trellising and well-drained sandy loam." },
+  watermelon:  { season: "Zaid", water: "High", period: "80–110 days", tip: "Needs warm temperatures and sandy, fertile soil." },
+  muskmelon:   { season: "Zaid", water: "Medium", period: "70–90 days", tip: "Prefers warm, dry weather with full sunlight." },
+  apple:       { season: "Rabi", water: "Medium", period: "150–180 days", tip: "Requires chilling hours; ideal for hilly regions." },
+  orange:      { season: "Rabi", water: "Medium", period: "240–365 days", tip: "Prefers well-drained loam and warm subtropical climate." },
+  papaya:      { season: "Kharif", water: "Medium", period: "270–330 days", tip: "Fast-growing; needs protection from frost and wind." },
+  coconut:     { season: "Kharif", water: "High", period: "365+ days", tip: "Coastal crop; requires consistent warmth and humidity." },
+  cotton:      { season: "Kharif", water: "Medium", period: "150–180 days", tip: "Needs black soil and warm, sunny weather." },
+  jute:        { season: "Kharif", water: "High", period: "120–150 days", tip: "Thrives in alluvial soil with high humidity." },
+  coffee:      { season: "Kharif / Rabi", water: "Medium", period: "365+ days", tip: "Shade-grown; prefers cool highlands and rich soil." },
+};
 
-    // State
-    this.currentLang = 'hi-IN'; // default: Hindi
-    this.currentLangName = 'Hindi';
-    this.state = 'idle'; // idle | recording | processing | speaking
-    this.lastTranscript = '';
-    this.lastResponse = '';
+/* ══════════════════════════════════════════════════
+   1. PARTICLE SYSTEM
+   ══════════════════════════════════════════════════ */
+(function initParticles() {
+  const canvas = document.getElementById("particles");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let w, h, particles = [];
+  const COUNT = 60;
 
-    this._init();
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x = Math.random() * w;
+      this.y = init ? Math.random() * h : h + 10;
+      this.size = Math.random() * 2.5 + 0.5;
+      this.speedY = -(Math.random() * 0.3 + 0.1);
+      this.speedX = (Math.random() - 0.5) * 0.2;
+      this.opacity = Math.random() * 0.35 + 0.05;
+      this.hue = Math.random() > 0.8 ? 38 : 152; // amber or green
+    }
+    update() {
+      this.y += this.speedY;
+      this.x += this.speedX + Math.sin(this.y * 0.005) * 0.15;
+      if (this.y < -10 || this.x < -10 || this.x > w + 10) this.reset(false);
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${this.hue}, 70%, 60%, ${this.opacity})`;
+      ctx.fill();
+    }
   }
 
-  _init() {
-    // Check browser support
-    if (!this.speech.isSupported()) {
-      this.ui.showToast(
-        'Speech recognition is not supported in this browser. Please use Chrome or Edge.',
-        'error',
-        10000
-      );
-    }
+  for (let i = 0; i < COUNT; i++) particles.push(new Particle());
 
-    // Load saved language
-    const savedLang = localStorage.getItem('blostem_lang');
-    if (savedLang) {
-      this.currentLang = savedLang;
-      const langObj = this.speech.languages.find(l => l.code === savedLang);
-      if (langObj) this.currentLangName = langObj.name;
-    }
-    this.ui.setActiveLanguage(this.currentLang);
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('blostem_theme');
-    if (savedTheme === 'light') {
-      document.body.classList.add('light-theme');
-      this._updateThemeIcon('light');
-    } else {
-      this._updateThemeIcon('dark');
-    }
-
-    this._bindEvents();
-    this._bindSpeechCallbacks();
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
   }
+  animate();
+})();
 
-  _updateThemeIcon(theme) {
-    const sunIcon = document.querySelector('.sun-icon');
-    const moonIcon = document.querySelector('.moon-icon');
-    if (sunIcon && moonIcon) {
-      if (theme === 'light') {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
+/* ══════════════════════════════════════════════════
+   2. NAV SCROLL EFFECT
+   ══════════════════════════════════════════════════ */
+(function initNav() {
+  const nav = document.getElementById("main-nav");
+  const scrollIndicator = document.getElementById("scroll-indicator");
+  if (!nav) return;
+
+  window.addEventListener("scroll", () => {
+    const scrolled = window.scrollY > 60;
+    nav.classList.toggle("scrolled", scrolled);
+    if (scrollIndicator) {
+      scrollIndicator.style.opacity = scrolled ? "0" : "1";
+    }
+  }, { passive: true });
+})();
+
+/* ══════════════════════════════════════════════════
+   3. SCROLL REVEAL
+   ══════════════════════════════════════════════════ */
+(function initReveal() {
+  const els = document.querySelectorAll(".reveal");
+  if (!els.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add("visible"), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+
+  els.forEach(el => observer.observe(el));
+})();
+
+/* ══════════════════════════════════════════════════
+   4. SLIDER VALUE SYNC
+   ══════════════════════════════════════════════════ */
+(function initSliders() {
+  document.querySelectorAll(".custom-slider").forEach(slider => {
+    const displayId = slider.dataset.display;
+    const display = document.getElementById(displayId);
+    if (!display) return;
+
+    function updateTrack() {
+      const min = parseFloat(slider.min);
+      const max = parseFloat(slider.max);
+      const val = parseFloat(slider.value);
+      const pct = ((val - min) / (max - min)) * 100;
+      slider.style.background = `linear-gradient(90deg, #059669 0%, #34d399 ${pct}%, #112118 ${pct}%)`;
+      display.textContent = slider.step % 1 !== 0 ? val.toFixed(1) : val;
+    }
+
+    slider.addEventListener("input", updateTrack);
+    updateTrack(); // initial
+  });
+})();
+
+/* ══════════════════════════════════════════════════
+   5. SEASON SELECTOR
+   ══════════════════════════════════════════════════ */
+let selectedSeason = "kharif";
+(function initSeason() {
+  document.querySelectorAll(".season-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".season-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedSeason = btn.dataset.season;
+    });
+  });
+})();
+
+/* ══════════════════════════════════════════════════
+   6. FORM SUBMISSION & API CALL
+   ══════════════════════════════════════════════════ */
+(function initForm() {
+  const form = document.getElementById("crop-form");
+  const btn = document.getElementById("analyze-btn");
+  const btnText = btn?.querySelector(".btn-text");
+  const btnLoader = document.getElementById("btn-loader");
+  const resultCard = document.getElementById("result-card");
+  const placeholder = document.getElementById("result-placeholder");
+
+  if (!form || !btn) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Gather values
+    const payload = {
+      N: parseFloat(document.getElementById("nitrogen").value),
+      P: parseFloat(document.getElementById("phosphorus").value),
+      K: parseFloat(document.getElementById("potassium").value),
+      ph: parseFloat(document.getElementById("ph").value),
+      temperature: parseFloat(document.getElementById("temperature").value),
+      humidity: parseFloat(document.getElementById("humidity").value),
+      rainfall: parseFloat(document.getElementById("rainfall").value),
+    };
+
+    // UI: loading state
+    btn.disabled = true;
+    if (btnText) btnText.textContent = "Analyzing...";
+    if (btnLoader) btnLoader.classList.remove("hidden");
+
+    try {
+      const res = await fetch(`${API_URL}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        showResult(data);
       } else {
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
+        showError(data.error || "Prediction failed.");
       }
-    }
-  }
-
-  _bindEvents() {
-    // Mic button
-    this.ui.micBtn.addEventListener('click', () => this._toggleRecording());
-
-    // Language buttons
-    this.ui.langButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const langCode = btn.dataset.lang;
-        const langObj = this.speech.languages.find(l => l.code === langCode);
-        if (langObj) {
-          this.currentLang = langCode;
-          this.currentLangName = langObj.name;
-          this.ui.setActiveLanguage(langCode);
-          localStorage.setItem('blostem_lang', langCode);
-        }
-      });
-    });
-
-    // Play button
-    this.ui.playBtn.addEventListener('click', () => this._togglePlayback());
-
-    // Keyboard shortcut: Space to toggle recording
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !this._isInputFocused()) {
-        e.preventDefault();
-        this._toggleRecording();
-      }
-    });
-
-    // Theme toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light-theme');
-        const theme = isLight ? 'light' : 'dark';
-        localStorage.setItem('blostem_theme', theme);
-        this._updateThemeIcon(theme);
-      });
-    }
-  }
-
-  _isInputFocused() {
-    const el = document.activeElement;
-    return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT');
-  }
-
-  _bindSpeechCallbacks() {
-    // Interim results (real-time transcription)
-    this.speech.onInterim = (text) => {
-      this.ui.setTranscript(text, true);
-    };
-
-    // Final result
-    this.speech.onResult = (text) => {
-      this.lastTranscript = text;
-      this.ui.setTranscript(text, false);
-      // Auto-process the query
-      this._processQuery(text);
-    };
-
-    // Recognition ended
-    this.speech.onEnd = () => {
-      if (this.state === 'recording') {
-        this.state = 'idle';
-        this.ui.setMicState('idle');
-      }
-    };
-
-    // Recognition error
-    this.speech.onError = (error) => {
-      this.state = 'idle';
-      this.ui.setMicState('idle');
-
-      const messages = {
-        'not-allowed': 'Microphone access denied. Please allow microphone access in your browser settings.',
-        'no-speech': 'No speech detected. Please try again.',
-        'not-supported': 'Speech recognition not supported. Please use Chrome or Edge.',
-        'start-failed': 'Failed to start listening. Please try again.',
-        'network': 'Network error. Please check your internet connection.',
-        'aborted': '', // Silent — user cancelled
-      };
-
-      const msg = messages[error] ?? `Speech error: ${error}`;
-      if (msg) this.ui.showToast(msg, 'error');
-    };
-
-    // TTS ended
-    this.speech.onSpeakEnd = () => {
-      this.state = 'idle';
-      this.ui.setMicState('idle');
-      this.ui.setPlayState(false);
-    };
-  }
-
-  /* ---------- Recording ---------- */
-  _toggleRecording() {
-    if (this.state === 'recording') {
-      this._stopRecording();
-    } else if (this.state === 'idle') {
-      this._startRecording();
-    } else if (this.state === 'speaking') {
-      this.speech.stopSpeaking();
-      this.state = 'idle';
-      this.ui.setMicState('idle');
-      this.ui.setPlayState(false);
-    }
-    // If processing, ignore clicks
-  }
-
-  _startRecording() {
-    this.state = 'recording';
-    this.ui.setMicState('recording');
-    this.ui.setTranscript('', false);
-    this.ui.setResponse('');
-    this.speech.startListening(this.currentLang);
-  }
-
-  _stopRecording() {
-    this.speech.stopListening();
-    this.state = 'idle';
-    this.ui.setMicState('idle');
-  }
-
-  /* ---------- Process Query via LLM ---------- */
-  async _processQuery(query) {
-    if (!query.trim()) return;
-
-    this.state = 'processing';
-    this.ui.setMicState('processing');
-    this.ui.setResponseLoading();
-
-    try {
-      const response = await this.gemini.getFDSuggestion(query, this.currentLangName);
-      this.lastResponse = response;
-      this.ui.setResponse(response);
-
-      // Add to history
-      this.ui.addToHistory(query, response, this.currentLangName);
-
-      // Auto-play the response
-      this._playResponse(response);
-    } catch (error) {
-      this.state = 'idle';
-      this.ui.setMicState('idle');
-      this.ui.setResponse('');
-      this.ui.showToast(error.message, 'error', 6000);
-      console.error('Gemini error:', error);
-    }
-  }
-
-  /* ---------- Playback ---------- */
-  _togglePlayback() {
-    if (this.speech.isSpeaking) {
-      this.speech.stopSpeaking();
-      this.state = 'idle';
-      this.ui.setMicState('idle');
-      this.ui.setPlayState(false);
-    } else if (this.lastResponse) {
-      this._playResponse(this.lastResponse);
-    }
-  }
-
-  async _playResponse(text) {
-    this.state = 'speaking';
-    this.ui.setMicState('speaking');
-    this.ui.setPlayState(true);
-
-    try {
-      await this.speech.speakText(text, this.currentLang, 1.0);
-    } catch (error) {
-      console.error('TTS error:', error);
-      // Don't show error for interruptions
+    } catch (err) {
+      showError("Could not reach the prediction server. Make sure the Flask server is running on port 5000.");
     } finally {
-      this.state = 'idle';
-      this.ui.setMicState('idle');
-      this.ui.setPlayState(false);
+      btn.disabled = false;
+      if (btnText) btnText.textContent = "Analyze & Recommend";
+      if (btnLoader) btnLoader.classList.add("hidden");
+    }
+  });
+
+  /* ── Show result ── */
+  function showResult(data) {
+    const primary = data.primary;
+    const info = CROP_DB[primary] || {};
+
+    // Crop name
+    const nameEl = document.getElementById("result-crop-name");
+    if (nameEl) nameEl.textContent = primary;
+
+    // Details
+    setDetail("detail-season", info.season || "—");
+    setDetail("detail-water", info.water || "—");
+    setDetail("detail-period", info.period || "—");
+    setDetail("detail-cluster", `Cluster ${data.cluster}`);
+
+    // Alt crops
+    const altSection = document.getElementById("alt-crops");
+    const altList = document.getElementById("alt-list");
+    const altCrops = data.recommendations.filter(r => r.name !== primary);
+
+    if (altCrops.length > 0 && altSection && altList) {
+      altList.innerHTML = "";
+      altCrops.forEach((crop, i) => {
+        const chip = document.createElement("span");
+        chip.className = "alt-chip";
+        chip.textContent = crop.name;
+        chip.style.animationDelay = `${0.6 + i * 0.1}s`;
+        altList.appendChild(chip);
+      });
+      altSection.classList.remove("hidden");
+    } else if (altSection) {
+      altSection.classList.add("hidden");
+    }
+
+    // Toggle visibility
+    if (placeholder) placeholder.classList.add("hidden");
+    if (resultCard) {
+      resultCard.classList.remove("hidden");
+      resultCard.classList.add("visible");
+    }
+
+    // Scroll to result on mobile
+    if (window.innerWidth < 1024 && resultCard) {
+      resultCard.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }
-}
 
-// Boot
-document.addEventListener('DOMContentLoaded', () => {
-  window.app = new App();
+  function setDetail(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function showError(msg) {
+    const nameEl = document.getElementById("result-crop-name");
+    if (nameEl) nameEl.textContent = "Error";
+
+    setDetail("detail-season", "—");
+    setDetail("detail-water", "—");
+    setDetail("detail-period", "—");
+    setDetail("detail-cluster", msg);
+
+    const altSection = document.getElementById("alt-crops");
+    if (altSection) altSection.classList.add("hidden");
+
+    if (placeholder) placeholder.classList.add("hidden");
+    if (resultCard) {
+      resultCard.classList.remove("hidden");
+      resultCard.classList.add("visible");
+    }
+  }
+
+  /* ── Reset button ── */
+  const resetBtn = document.getElementById("reset-btn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      if (resultCard) {
+        resultCard.classList.add("hidden");
+        resultCard.classList.remove("visible");
+      }
+      if (placeholder) placeholder.classList.remove("hidden");
+      const altSection = document.getElementById("alt-crops");
+      if (altSection) altSection.classList.add("hidden");
+    });
+  }
+})();
+
+/* ══════════════════════════════════════════════════
+   7. SMOOTH ANCHOR SCROLL
+   ══════════════════════════════════════════════════ */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", (e) => {
+    e.preventDefault();
+    const target = document.querySelector(anchor.getAttribute("href"));
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 });

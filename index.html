@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
+<<<<<<< HEAD
     content="RichPerson FD Advisor — Get smart Fixed Deposit suggestions in your language. Speak in Hindi, Telugu, Tamil, Kannada and more. Powered by AI.">
   
   <!-- Open Graph / Social Media Meta Tags -->
@@ -20,367 +20,404 @@
   <meta name="twitter:description" content="Get smart Fixed Deposit suggestions in your language. Speak in Hindi, Telugu, Tamil, Kannada and more. Powered by AI.">
 
   <title>RichPerson - FD Advisor</title>
+=======
+    content="CropWise — AI-powered crop recommendation system. Analyze soil and environmental parameters to get precise crop suggestions for optimal farming.">
+  <title>CropWise — Smart Crop Recommendation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+>>>>>>> 97ea0ae (feat: initialize CropWise project with backend integration and machine learning models for crop recommendation)
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4c-4 0-8 3-10 8 4-2 8-2 12 0 4 2 8 2 12 0C28 7 24 4 20 4c-1.5 0-3 .5-4 1.5' fill='%2334d399'/%3E%3Cpath d='M16 8v20' stroke='%23059669' stroke-width='2' fill='none'/%3E%3C/svg%3E">
 </head>
 
 <body>
+  <!-- Particle Canvas -->
+  <canvas id="particles" aria-hidden="true"></canvas>
 
-  <!-- ============ Top Nav Brand ============ -->
-  <nav class="top-nav">
-    <a href="/" class="brand-name">
-      <img src="assets/logo.svg" alt="RichPerson" class="brand-logo">
-      RichPerson
+  <!-- ── Navigation ── -->
+  <nav class="main-nav" id="main-nav">
+    <a href="#" class="nav-brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 20h10" />
+        <path d="M10 20c5.5-2.5 8-8 8-14-3 0-6 1-8 4-2-3-5-4-8-4 0 6 2.5 11.5 8 14z" />
+      </svg>
+      CropWise
     </a>
-    <div class="nav-actions">
-      <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
-        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-      <div class="nav-divider"></div>
-      <a href="https://murthy0x05.me/" target="_blank" rel="noopener" class="dev-link">
-        <span class="dev-text-full">Wanna know who developed this?</span>
-        <img src="https://github.com/murthy0x05.png" alt="Developer Avatar" class="dev-avatar" style="display: none;">
-      </a>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#analyze">Analyze</a>
+      <a href="#about">About</a>
     </div>
   </nav>
 
-  <!-- ============ Main App ============ -->
-  <div class="app-container">
-
-    <!-- Voice Interface — Mic First -->
-    <section class="voice-section" aria-label="Voice input">
-      <div class="mic-container">
-        <div class="mic-ring"></div>
-        <div class="mic-ring"></div>
-        <div class="mic-ring"></div>
-        <button class="mic-btn" id="mic-btn" aria-label="Start or stop voice recording">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-            <line x1="12" y1="19" x2="12" y2="23" />
-            <line x1="8" y1="23" x2="16" y2="23" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Dynamic Status Text -->
-      <div class="status-text" id="status-text">Ask <span class="brand-highlight">RichPerson</span> about Fixed Deposits
-      </div>
-
-      <!-- Waveform Visualizer -->
-      <div class="waveform" id="waveform">
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-      </div>
-    </section>
-
-    <!-- Language Selector -->
-    <nav class="language-bar" aria-label="Select your language">
-      <label>Language:</label>
-      <button class="lang-btn active" data-lang="hi-IN">हिन्दी</button>
-      <button class="lang-btn" data-lang="en-IN">English</button>
-      <button class="lang-btn" data-lang="te-IN">తెలుగు</button>
-      <button class="lang-btn" data-lang="ta-IN">தமிழ்</button>
-      <button class="lang-btn" data-lang="kn-IN">ಕನ್ನಡ</button>
-      <button class="lang-btn" data-lang="ml-IN">മലയാളം</button>
-      <button class="lang-btn" data-lang="bn-IN">বাংলা</button>
-      <button class="lang-btn" data-lang="mr-IN">मराठी</button>
-      <button class="lang-btn" data-lang="gu-IN">ગુજરાતી</button>
-    </nav>
-
-    <!-- Transcript Card -->
-    <div class="card transcript-card" id="transcript-card">
-      <div class="card-header">
-        <div class="card-title">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-          </svg>
-          Your Question
-        </div>
-      </div>
-      <div class="card-body empty" id="transcript-body">Your speech will appear here...</div>
+  <!-- ── Hero Section ── -->
+  <section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <span class="hero-badge">AI-Powered Agriculture</span>
+      <h1>Smart Farming Starts with <span class="text-gradient">Smart Decisions</span></h1>
+      <p class="hero-sub">Analyze your soil composition and environmental conditions to receive precise, ML-powered
+        crop recommendations tailored to your land.</p>
+      <a href="#analyze" class="hero-cta" id="hero-cta">
+        Start Analysis
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
     </div>
-
-    <!-- Response Card -->
-    <div class="card response-card" id="response-card">
-      <div class="card-header">
-        <div class="card-title">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          FD Suggestion
-        </div>
-        <button class="play-btn" id="play-btn" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
-          Listen
-        </button>
-      </div>
-      <div class="card-body empty" id="response-body">FD suggestions will appear here...</div>
+    <div class="scroll-indicator" id="scroll-indicator">
+      <span>Scroll to explore</span>
+      <div class="scroll-line"></div>
     </div>
+  </section>
 
-    <!-- Conversation History -->
-    <section class="history-section hidden" id="history-section">
-      <div class="history-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="1 4 1 10 7 10" />
-          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
-        </svg>
-        Conversation History
-      </div>
-      <div class="history-list" id="history-list"></div>
-    </section>
-
-
-    <!-- ============ Preface Section ============ -->
-    <section class="content-section">
-      <div class="section-header collapsible collapsed">
-        <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-        </svg>
-        <h2>Preface</h2>
-        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </div>
-      <div class="section-body collapsed">
-        <p class="section-lead">This project is not merely about building a website.</p>
-        <p>At its core, <span class="brand-highlight">RichPerson</span> is designed as a complete, end-to-end
-          intelligent system—one that reimagines how financial guidance should be accessed, understood, and experienced.
-        </p>
-        <p>The vision extends far beyond a user interface. It encompasses a full-stack architecture that integrates:</p>
-        <ul class="feature-list">
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+  <!-- ── How It Works ── -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title reveal">How It Works</h2>
+      <p class="section-subtitle reveal">Three simple steps to optimal crop selection</p>
+      <div class="steps-grid">
+        <div class="step-card glass-card reveal">
+          <div class="step-number">01</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M10 2v7.31" />
+              <path d="M14 9.3V1.99" />
+              <path d="M8.5 2h7" />
+              <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+              <path d="M5.52 16h12.96" />
             </svg>
-            <div><strong>Speech-to-Text (STT)</strong> — capturing user intent naturally through voice</div>
-          </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </div>
+          <h3>Test Your Soil</h3>
+          <p>Collect soil samples and measure Nitrogen, Phosphorus, Potassium levels and pH value.</p>
+        </div>
+        <div class="step-card glass-card reveal">
+          <div class="step-number">02</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14" />
+              <line x1="4" y1="10" x2="4" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="3" />
+              <line x1="20" y1="21" x2="20" y2="16" />
+              <line x1="20" y1="12" x2="20" y2="3" />
+              <line x1="1" y1="14" x2="7" y2="14" />
+              <line x1="9" y1="8" x2="15" y2="8" />
+              <line x1="17" y1="16" x2="23" y2="16" />
             </svg>
-            <div><strong>LLM-driven reasoning</strong> — interpreting, structuring, and generating meaningful financial
-              insights</div>
-          </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </div>
+          <h3>Input Parameters</h3>
+          <p>Enter soil composition along with climate data — temperature, humidity, and rainfall.</p>
+        </div>
+        <div class="step-card glass-card reveal">
+          <div class="step-number">03</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M7 20h10" />
+              <path d="M10 20c5.5-2.5 8-8 8-14-3 0-6 1-8 4-2-3-5-4-8-4 0 6 2.5 11.5 8 14z" />
             </svg>
-            <div><strong>Text-to-Speech (TTS)</strong> — delivering responses in a human-like, accessible manner</div>
-          </li>
-        </ul>
-        <p>Together, these components form a seamless conversational pipeline, enabling users to interact with financial
-          knowledge as they would with a trusted advisor.</p>
-        <p>What makes this particularly significant is that this architecture is not theoretical—it has been
-          independently conceptualized and built as part of <strong>BloStem</strong>, reflecting a deep focus on system
-          design, integration, and real-world applicability.</p>
-        <p class="section-callout">This submission represents a foundation of a much larger system—one that prioritizes
-          accessibility, linguistic inclusivity, and intelligent interaction over superficial complexity.</p>
-      </div>
-
-    </section>
-
-    <!-- ============ What is my idea? Section ============ -->
-    <section class="content-section">
-      <div class="section-header collapsible collapsed">
-        <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 18h6" />
-          <path d="M10 22h4" />
-          <path d="M12 2a7 7 0 0 0-7 7c0 2 1.5 4 3 6v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2c1.5-2 3-4 3-6a7 7 0 0 0-7-7z" />
-        </svg>
-        <h2>What is my idea?</h2>
-        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </div>
-      <div class="section-body collapsed">
-        <p class="section-lead">In a world where financial decisions define your future, understanding them should feel
-          effortless—and personal.</p>
-        <p><span class="brand-highlight">RichPerson</span> offers a curated, intelligent approach to Fixed Deposits,
-          delivered in the language you think in—be it हिन्दी, English, తెలుగు, தமிழ், ಕನ್ನಡ, മലയാളം, বাংলা, मराठी, or
-          ગુજરાતી. Every insight is crafted to be clear, precise, and deeply relevant, eliminating noise and elevating
-          your financial awareness.</p>
-        <p>This isn't just information—it's <em>perspective</em>.<br>A refined way to understand, evaluate, and grow
-          your wealth with confidence.</p>
-        <p>Because true luxury is not just having wealth—it's <strong>understanding it</strong>.</p>
-        <p class="section-highlight">And if you're wondering where to begin:<br>Listen to <span
-            class="brand-highlight">RichPerson</span>… to know how he became one.</p>
-      </div>
-    </section>
-
-    <!-- ============ What I Would Have Built Section ============ -->
-    <section class="content-section">
-      <div class="section-header collapsible collapsed">
-        <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-        </svg>
-        <h2>What I Would Have Built With More Time & Resources?</h2>
-        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </div>
-      <div class="section-body collapsed">
-        <p class="section-lead">At the heart of RichPerson is a larger ambition—to evolve from a static platform into a
-          voice-first, intelligent financial companion.</p>
-        <p>With adequate resources, I would have leveraged the power of <strong>Wav2Vec 2.0</strong>, specifically the
-          <code>wav2vec2-large-xlsr-300m</code> (a ~300 million parameter Speech-to-Text model), and fine-tuned it
-          extensively for multiple Indian languages.
-        </p>
-        <p>This would enable:</p>
-        <ul class="feature-list">
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-            </svg>
-            <div><strong>Seamless voice-based interaction</strong> — Users could ask financial questions naturally, in
-              their own language</div>
-          </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="2" y1="12" x2="22" y2="12" />
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            </svg>
-            <div><strong>Deep multilingual understanding</strong> — Supporting diverse accents, dialects, and regional
-              speech patterns</div>
-          </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            <div><strong>Real-time speech-to-insight conversion</strong> — Turning spoken queries into precise financial
-              guidance instantly</div>
-          </li>
-        </ul>
-        <p>The result? <span class="brand-highlight">RichPerson</span> would become not just a platform—but a
-          <strong>conversational financial advisor</strong> that listens, understands, and responds.
-        </p>
-
-        <div class="callout-block">
-          <h3>The Only Limitation: Resources</h3>
-          <p>The vision is clear. The architecture is defined. The approach is validated.</p>
-          <p>The only constraint preventing this from being implemented during the hackathon was access to sufficient
-            computational resources—including high-performance GPUs, large-scale multilingual datasets, and the
-            infrastructure required to fine-tune such a large model efficiently.</p>
-          <p class="section-highlight">In essence:<br>This is not a question of feasibility—it's a question of
-            <strong>scale</strong>.
-          </p>
+          </div>
+          <h3>Get Recommendations</h3>
+          <p>Our ML model analyzes your data and recommends the most suitable crops for maximum yield.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ============ Future Plans Section ============ -->
-    <section class="content-section">
-      <div class="section-header collapsible collapsed">
-        <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-        <h2>Future Plans</h2>
-        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+  <!-- ── Analyze Section ── -->
+  <section class="section analyze-section" id="analyze">
+    <div class="container">
+      <h2 class="section-title reveal">Soil & Environment Analysis</h2>
+      <p class="section-subtitle reveal">Enter your parameters below for a precise recommendation</p>
+
+      <div class="analyze-layout">
+        <!-- Form Card -->
+        <div class="glass-card form-card reveal">
+          <form id="crop-form" autocomplete="off">
+            <!-- Season Selector -->
+            <div class="form-group">
+              <label class="form-label">Growing Season</label>
+              <div class="season-selector">
+                <button type="button" class="season-btn active" data-season="kharif">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                  <span>Kharif</span>
+                  <small>Jun — Oct</small>
+                </button>
+                <button type="button" class="season-btn" data-season="rabi">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.5 19a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z" />
+                    <path d="M6 15a4 4 0 0 0 4 4h7" />
+                    <path d="M3 11h2" />
+                    <path d="M2 17h3" />
+                    <path d="M19 6V3" />
+                    <path d="M22 6h-3" />
+                  </svg>
+                  <span>Rabi</span>
+                  <small>Nov — Mar</small>
+                </button>
+                <button type="button" class="season-btn" data-season="zaid">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v2" />
+                    <path d="m4.93 4.93 1.41 1.41" />
+                    <path d="M20 12h2" />
+                    <path d="m19.07 4.93-1.41 1.41" />
+                    <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" />
+                    <path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z" />
+                  </svg>
+                  <span>Zaid</span>
+                  <small>Mar — Jun</small>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-divider"></div>
+
+            <!-- Soil Composition -->
+            <h3 class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 22 16 8" /><path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94z" />
+                <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94z" />
+                <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94z" />
+                <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4z" />
+              </svg>
+              Soil Composition
+            </h3>
+            <div class="sliders-grid">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="nitrogen">Nitrogen (N)</label>
+                  <div class="slider-val"><span id="n-val">50</span> <small>kg/ha</small></div>
+                </div>
+                <input type="range" id="nitrogen" min="0" max="140" value="50" step="1" class="custom-slider"
+                  data-display="n-val">
+                <div class="slider-range"><span>0</span><span>140</span></div>
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="phosphorus">Phosphorus (P)</label>
+                  <div class="slider-val"><span id="p-val">50</span> <small>kg/ha</small></div>
+                </div>
+                <input type="range" id="phosphorus" min="5" max="145" value="50" step="1" class="custom-slider"
+                  data-display="p-val">
+                <div class="slider-range"><span>5</span><span>145</span></div>
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="potassium">Potassium (K)</label>
+                  <div class="slider-val"><span id="k-val">50</span> <small>kg/ha</small></div>
+                </div>
+                <input type="range" id="potassium" min="5" max="205" value="50" step="1" class="custom-slider"
+                  data-display="k-val">
+                <div class="slider-range"><span>5</span><span>205</span></div>
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="ph">pH Value</label>
+                  <div class="slider-val"><span id="ph-val">6.5</span></div>
+                </div>
+                <input type="range" id="ph" min="3.5" max="10" value="6.5" step="0.1" class="custom-slider"
+                  data-display="ph-val">
+                <div class="slider-range"><span>3.5</span><span>10</span></div>
+              </div>
+            </div>
+
+            <div class="form-divider"></div>
+
+            <!-- Environmental Conditions -->
+            <h3 class="form-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12h1" /><path d="M12 2v1" /><path d="m4.93 4.93.7.7" /><path d="M21 12h1" />
+                <path d="m19.07 4.93-.7.7" /><path d="M12 7a5 5 0 1 0 0 10" />
+                <path d="M17 17v.01" /><path d="M19 13v.01" />
+              </svg>
+              Environmental Conditions
+            </h3>
+            <div class="sliders-grid">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="temperature">Temperature</label>
+                  <div class="slider-val"><span id="temp-val">25</span> <small>&deg;C</small></div>
+                </div>
+                <input type="range" id="temperature" min="8" max="44" value="25" step="0.5" class="custom-slider"
+                  data-display="temp-val">
+                <div class="slider-range"><span>8&deg;C</span><span>44&deg;C</span></div>
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="humidity">Humidity</label>
+                  <div class="slider-val"><span id="hum-val">60</span> <small>%</small></div>
+                </div>
+                <input type="range" id="humidity" min="14" max="100" value="60" step="1" class="custom-slider"
+                  data-display="hum-val">
+                <div class="slider-range"><span>14%</span><span>100%</span></div>
+              </div>
+              <div class="slider-group slider-full">
+                <div class="slider-header">
+                  <label for="rainfall">Rainfall</label>
+                  <div class="slider-val"><span id="rain-val">150</span> <small>mm</small></div>
+                </div>
+                <input type="range" id="rainfall" min="20" max="300" value="150" step="1" class="custom-slider"
+                  data-display="rain-val">
+                <div class="slider-range"><span>20 mm</span><span>300 mm</span></div>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="analyze-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <span class="btn-text">Analyze &amp; Recommend</span>
+              <div class="btn-loader hidden" id="btn-loader">
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-panel" id="result-panel">
+          <div class="glass-card result-card hidden" id="result-card">
+            <div class="result-header">
+              <div class="result-icon" id="result-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M7 20h10" />
+                  <path d="M10 20c5.5-2.5 8-8 8-14-3 0-6 1-8 4-2-3-5-4-8-4 0 6 2.5 11.5 8 14z" />
+                </svg>
+              </div>
+              <span class="result-label">Recommended Crop</span>
+              <h2 class="result-crop-name" id="result-crop-name"></h2>
+            </div>
+
+            <div class="result-details" id="result-details">
+              <div class="detail-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span class="detail-label">Season</span>
+                <span class="detail-value" id="detail-season">—</span>
+              </div>
+              <div class="detail-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                </svg>
+                <span class="detail-label">Water Needs</span>
+                <span class="detail-value" id="detail-water">—</span>
+              </div>
+              <div class="detail-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span class="detail-label">Growing Period</span>
+                <span class="detail-value" id="detail-period">—</span>
+              </div>
+              <div class="detail-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <span class="detail-label">Cluster Match</span>
+                <span class="detail-value" id="detail-cluster">—</span>
+              </div>
+            </div>
+
+            <!-- Alternative crops -->
+            <div class="alt-crops hidden" id="alt-crops">
+              <h4 class="alt-title">Also Suitable</h4>
+              <div class="alt-list" id="alt-list"></div>
+            </div>
+
+            <button class="reset-btn" id="reset-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10" />
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              </svg>
+              New Analysis
+            </button>
+          </div>
+
+          <!-- Placeholder when no results -->
+          <div class="result-placeholder" id="result-placeholder">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+              stroke-linecap="round" stroke-linejoin="round" opacity="0.3">
+              <path d="M7 20h10" />
+              <path d="M10 20c5.5-2.5 8-8 8-14-3 0-6 1-8 4-2-3-5-4-8-4 0 6 2.5 11.5 8 14z" />
+            </svg>
+            <p>Your crop recommendation will appear here after analysis</p>
+          </div>
+        </div>
       </div>
-      <div class="section-body collapsed">
-        <p class="section-lead"><span class="brand-highlight">RichPerson</span> is designed to continuously evolve into
-          a frictionless, intelligent financial assistant—where technology fades into the background and clarity takes
-          center stage.</p>
+    </div>
+  </section>
 
-        <h3 class="sub-heading">1. Automatic Language Recognition (Zero-Selection Experience)</h3>
-        <p>The next step is to eliminate even the smallest barrier—language selection.</p>
-        <p>Users won't need to choose whether they're speaking in हिन्दी, தமிழ், తెలుగు, or any other language. Instead,
-          an advanced Automatic Speech Recognition (ASR) system will:</p>
-        <ul class="feature-list">
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-            </svg>
-            <div><strong>Detect the spoken language</strong> in real-time</div>
-          </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-            </svg>
-            <div><strong>Seamlessly process the query</strong> without manual input</div>
-          </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            <div><strong>Deliver responses instantly</strong> in the same language</div>
-          </li>
-        </ul>
-        <p class="section-callout">This creates a <strong>zero-friction experience</strong>, where users simply
-          speak—and <span class="brand-highlight">RichPerson</span> understands.</p>
+  <!-- ── About Section ── -->
+  <section class="section" id="about">
+    <div class="container">
+      <h2 class="section-title reveal">About the Model</h2>
+      <p class="section-subtitle reveal">Powered by Machine Learning</p>
+      <div class="about-grid">
+        <div class="glass-card about-card reveal">
+          <h3>Clustering Algorithm</h3>
+          <p>CropWise uses a Gaussian Mixture Model (GMM) trained on extensive agricultural data covering 22 crop
+            types. The model identifies natural groupings in soil and climate patterns to match your conditions with
+            the most suitable crops.</p>
+        </div>
+        <div class="glass-card about-card reveal">
+          <h3>22 Crop Types</h3>
+          <p>From staple grains like rice and maize, to pulses like chickpea and lentil, to fruits like mango and
+            watermelon — the model covers a diverse range of Indian agricultural crops across all major seasons.</p>
+        </div>
+        <div class="glass-card about-card reveal">
+          <h3>7 Input Features</h3>
+          <p>The prediction pipeline considers Nitrogen, Phosphorus, Potassium, soil pH, temperature, humidity, and
+            rainfall — the key factors that determine crop viability in any given region.</p>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="app-footer">
-      <p>This project is developed with ❤️ by <a href="https://murthy0x05.me" target="_blank" rel="noopener"
-          class="footer-link">Pavan</a></p>
-    </footer>
-  </div>
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10" />
+          <path d="M10 20c5.5-2.5 8-8 8-14-3 0-6 1-8 4-2-3-5-4-8-4 0 6 2.5 11.5 8 14z" />
+        </svg>
+        CropWise
+      </div>
+      <p class="footer-copy">AI-powered crop recommendation for smarter agriculture</p>
+    </div>
+  </footer>
 
-  <!-- Toast Container -->
-  <div class="toast-container" id="toast-container"></div>
-
-  <!-- App Script -->
-  <script type="module" src="js/app.js"></script>
+  <script src="js/app.js"></script>
 </body>
 
 </html>
