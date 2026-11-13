@@ -3,3 +3,5 @@ flask-cors==5.0.1
 scikit-learn==1.6.1
 pandas==2.2.3
 numpy==2.2.5
+joblib==1.4.3
+gunicorn==22.0.0
